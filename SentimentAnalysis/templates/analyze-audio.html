@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Audio File</title>
+</head>
+<body>
+    <input type="file" accept="audio/*" id="audioFileInput">
+    <button onclick="uploadAudio()">Upload Audio</button>
+
+    <!-- display the prediction context once the audio file is uploaded -->
+    <div id="predictionContext">
+        {% if prediction %}
+            <h2>Prediction</h2>
+            <p>{{ prediction }}</p>
+        {% endif %}
+    </div>
+
+    <script>
+        function uploadAudio() {
+            const fileInput = document.getElementById('audioFileInput');
+            const file = fileInput.files[0];
+    
+            if (!file) {
+                alert("Please select an audio file.");
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append('audio', file);
+    
+            fetch('/analyze-audio/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle response data
+                console.log(data);
+                
+                // Update the prediction context div with the prediction
+                const predictionContext = document.getElementById('predictionContext');
+                predictionContext.innerHTML = `
+                    <h2>Prediction</h2>
+                    <p>${data.prediction}</p>
+                `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    
+</body>
+</html>
