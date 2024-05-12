@@ -1,19 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Audio File</title>
-</head>
-<body>
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block body %}
     <input type="file" accept="audio/*" id="audioFileInput">
     <button onclick="uploadAudio()">Upload Audio</button>
 
     <!-- display the prediction context once the audio file is uploaded -->
     <div id="predictionContext">
         {% if prediction %}
-            <h2>Prediction</h2>
-            <p>{{ prediction }}</p>
+            <h2 class="text-wh" style="color: white; font-size: 20px; margin-top: 8px;">Prediction</h2>
+            <p class="text-wh" style="color: white; font-size: 16px;">{{ prediction }}</p>
         {% endif %}
     </div>
 
@@ -56,6 +52,5 @@
             });
         }
     </script>
-    
-</body>
 </html>
+{% endblock %}

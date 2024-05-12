@@ -1,13 +1,72 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 
-{% block content %}
-{% if request.user.is_authenticated %}
-  <p>{{ request.user.username }}</p>
-  <a href="{% url 'logout' %}">Logout</a>
-{% else %}
-  <a href="{% url 'login' %}">Login</a>
-  <a href="{% url 'signup' %}">Signup</a>
-{% endif %}
+{% load static %}
 
-<h1>Welcome!</h1>
+{% block body %}
+<!-- banner -->
+
+<section class="banner_w3lspvt" id="home">
+	<div class="vh-100" style="background: url('{% static 'images/bg-2.jpg' %}') no-repeat center; background-size: cover;">
+		<div class="d-flex justify-content-center align-items-center" style="padding-top: 12%;">
+                <div class="card-body-audio text-center py-6">
+                    <h3 class="text-wh my-4 text-white-26">AudioVibe</h3>
+                    <h4 class="text-wh mx-auto my-3 text-white-24">Hey!! Please Upload your audio file here. <b>Let's diagnose its sentiment.</b></h4>
+                    <br>
+                    <input type="file" accept="audio/*" id="audioFileInput">
+                    <button onclick="uploadAudio()">Upload Audio</button>
+                
+                    <!-- display the prediction context once the audio file is uploaded -->
+                    <div id="predictionContext">
+                        {% if prediction %}
+                        <h2 class="text-wh" style="color: white; font-size: 20px; margin-top: 8px;">Prediction</h2>
+                        <p class="text-wh" style="color: white; font-size: 16px;">{{ prediction }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+		</div>
+	</div>
+</section>
+
+<script>
+    function uploadAudio() {
+        const fileInput = document.getElementById('audioFileInput');
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please select an audio file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('audio', file);
+
+        fetch('/analyze-audio/', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle response data
+            console.log(data);
+            
+            // Update the prediction context div with the prediction
+            const predictionContext = document.getElementById('predictionContext');
+            predictionContext.innerHTML = `
+                <h2>Prediction</h2>
+                <p>${data.prediction}</p>
+            `;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+
+</html>
+
 {% endblock %}
