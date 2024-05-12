@@ -14,7 +14,8 @@ loaded_model = pickle.load(open('../modelForPrediction1.sav', 'rb')) # loading t
 # Create your views here.
 # Home page
 def index(request):
-    return render(request, 'index.html')
+    # return render(request, 'index.html')
+    return redirect('login')
 
 # signup page
 def user_signup(request):
@@ -52,7 +53,7 @@ def user_logout(request):
 @csrf_exempt
 def analyze_audio(request):
     if request.method == 'GET':
-        return render(request, 'analyze-audio.html')
+        return render(request, 'index.html')
 
     if request.method == 'POST':
         audio_file = request.FILES['audio']
